@@ -33,6 +33,7 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.stage.*;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.scene.layout.*;
+
 import se.plushogskolan.ju15.beans.*;
 /**
  * Description...
@@ -101,10 +102,10 @@ public class SpamWindow extends Application {
 
 		TableColumn<PersonBean, String> lastNameCol = new TableColumn<PersonBean, String>("Last Name");
 		lastNameCol.setCellValueFactory(new PropertyValueFactory("lastName"));
-//		lastNameCol.setCellFactory(TextFieldTableCell.<PersonBean> forTableColumn());
-//		lastNameCol.setOnEditCommit((CellEditEvent<PersonBean, String> t) -> {
-//			((PersonBean) t.getTableView().getItems().get(t.getTablePosition().getRow())).setLastName(t.getNewValue());
-//		});
+		lastNameCol.setCellFactory(TextFieldTableCell.<PersonBean> forTableColumn());
+		lastNameCol.setOnEditCommit((CellEditEvent<PersonBean, String> t) -> {
+			((PersonBean) t.getTableView().getItems().get(t.getTablePosition().getRow())).setLastName(t.getNewValue());
+		});
 		
 		
 		TableColumn<PersonBean,String> fullNameCol=new TableColumn<PersonBean, String>("Full Name");
