@@ -1,4 +1,4 @@
-package spamWindow;
+package se.plushogskolan.ju15.beans;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;

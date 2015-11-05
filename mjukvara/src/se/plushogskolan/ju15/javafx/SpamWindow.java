@@ -1,8 +1,9 @@
-package spamWindow;
-//testar version 123
+package se.plushogskolan.ju15.javafx;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
@@ -32,7 +33,7 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.stage.*;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.scene.layout.*;
-
+import se.plushogskolan.ju15.beans.*;
 /**
  * Description...
  *
@@ -241,20 +242,22 @@ rootNode.setStyle("-fx-background-color: green");  ;
 		try {
 			System.out.println(Paths.get("mydata.txt").toAbsolutePath());
 	//ORGINAL		List<String> lines = Files.readAllLines(Paths.get("mydata.txt"), Charset.defaultCharset());		
-			//.MODIFIERAD
-			Path path = FileSystems.getDefault().getPath("mydata.txt");
-		List<String> lines = Files.readAllLines(path,Charset.defaultCharset()); 
-			// SLUT MOD	
-				
-			String data[] = new String[5];
-			for (String line : lines) {
-				data = line.split(",");
-				if(!line.isEmpty()){
-					PersonBean p = new PersonBean(data[0], data[1], data[2], data[3], new Integer(data[4]));
-					personData.add(p);
-				}
+
+			InputStream is = getClass().getResourceAsStream("mydata.txt");
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
+			String str;
+			int counter=0;	
+			
+			while ((str = br.readLine()) != null) {
+				String data[]=str.split(",");
+				PersonBean p = new PersonBean(data[0], data[1], data[2], data[3], new Integer(data[4]));
+				personData.add(p);
+				counter++;
 			}
-			System.out.println("Loaded " + lines.size() + " rows of data.");
+			
+				
+			System.out.println("Loaded " + counter + " rows of data.");
 		} catch (Exception e) {
 			System.out.println("There was a problem loading the file:" + e.getMessage());
 			e.printStackTrace();
