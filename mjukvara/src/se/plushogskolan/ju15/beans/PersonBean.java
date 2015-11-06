@@ -24,7 +24,7 @@ public class PersonBean {
 	
 	}
 	
-	public PersonBean(String firstName,String lastName, String email, String gender, Integer age) {
+	public PersonBean(String firstName,String lastName,String email, String gender, Integer age) {
 		setFirstName(firstName);
 		setLastName(lastName);
 		setFullName(firstName,lastName);
@@ -45,9 +45,6 @@ public class PersonBean {
         this.firstNameProperty().set(name);
     }
 
-    
-    
-    
     
     
     public void setFullName( String f,String l){

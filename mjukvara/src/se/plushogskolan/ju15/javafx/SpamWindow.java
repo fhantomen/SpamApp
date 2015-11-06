@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -37,7 +38,8 @@ import javafx.scene.layout.*;
 import se.plushogskolan.ju15.beans.*;
 /**
  * Description...
- *
+ *class SpamWindow skapar tabell med kolumner och läser in data.
+ *när användaren stänger programmet sparar klassen datat i en text fil.
  * 
  */
 public class SpamWindow extends Application {
@@ -131,7 +133,7 @@ public class SpamWindow extends Application {
 		ageCol.setOnEditCommit((CellEditEvent<PersonBean, Integer> t) -> {
 			((PersonBean) t.getTableView().getItems().get(t.getTablePosition().getRow())).setAge(t.getNewValue());
 		});
-		table.getColumns().setAll(firstNameCol, lastNameCol,fullNameCol, emailCol, genderCol, ageCol);
+		table.getColumns().setAll(fullNameCol, emailCol, genderCol, ageCol);
 
 		
 		Button allButton = new Button("All");
@@ -215,7 +217,7 @@ public class SpamWindow extends Application {
 		rootNode.getChildren().addAll(table, allButton, maleButton, femaleButton, over18Button, addButton,
 				removeButton);
 		// Create a scene.
-		Scene myScene = new Scene(rootNode, 800, 800);
+		Scene myScene = new Scene(rootNode, 600, 600);
 rootNode.setStyle("-fx-background-color: green");  ;
 
 		// Set the scene on the stage.
@@ -242,13 +244,13 @@ rootNode.setStyle("-fx-background-color: green");  ;
 	private void loadData() {
 		try {
 			System.out.println(Paths.get("mydata.txt").toAbsolutePath());
-	//ORGINAL		List<String> lines = Files.readAllLines(Paths.get("mydata.txt"), Charset.defaultCharset());		
-
+List<String> lines = Files.readAllLines(Paths.get("mydata.txt"), StandardCharsets.UTF_8);		
+/* modifiera
 			InputStream is = getClass().getResourceAsStream("mydata.txt");
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
 			String str;
-			int counter=0;	
+			int counter=0;	 
 			
 			while ((str = br.readLine()) != null) {
 				String data[]=str.split(",");
@@ -256,12 +258,21 @@ rootNode.setStyle("-fx-background-color: green");  ;
 				personData.add(p);
 				counter++;
 			}
-			
+			*/
+String data[] = new String[6];
+for (String line : lines) {
+	data = line.split(",");
+	if(!line.isEmpty()){
+		PersonBean p = new PersonBean(data[0], data[1], data[2], data[3], new Integer(data[4]));
+		personData.add(p);
+	}
+}
 				
-			System.out.println("Loaded " + counter + " rows of data.");
+			System.out.println("Loaded " + lines.size() + " rows of data.");
 		} catch (Exception e) {
 			System.out.println("There was a problem loading the file:" + e.getMessage());
 			e.printStackTrace();
+			
 		}
 		
 	}
@@ -272,7 +283,7 @@ rootNode.setStyle("-fx-background-color: green");  ;
 			Iterator<PersonBean> it = personData.iterator();
 			while (it.hasNext()) {
 				PersonBean p = it.next();
-				writer.println(p.getFirstName() + "," + p.getLastName() + "," + p.getEmail() + "," + p.getGender() + "," + p.getAge());
+				writer.println(p.getFirstName() + "," + p.getLastName() + ","  + p.getEmail() + "," + p.getGender() + "," + p.getAge());
 			}
 			writer.close();
 		} catch (Exception e) {
