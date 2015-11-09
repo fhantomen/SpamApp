@@ -26,6 +26,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -48,6 +49,7 @@ public class SpamWindow extends Application {
 	private ObservableList<PersonBean> personData = FXCollections.observableArrayList();
 	SortedList<PersonBean> sortedData = null;
 	FilteredList<PersonBean> filteredData = null;
+	private BorderPane layout;
 
 	public static void main(String[] args) {
 
@@ -61,21 +63,6 @@ public class SpamWindow extends Application {
 	public void init() {
 		System.out.println("Inside the init() method.");
 		loadData();
-		/*
-		 * // read file Person2 person1 = new Person2("Pelle", "Olsson",
-		 * "20040102-1234"); // person1.setFirstName("Pelle"); //
-		 * person1.setLastName("Olsson"); // person.setAge(20);
-		 * personData.add(person1); Person2 person2 = new Person2("Sven",
-		 * "Svensson", "19901022-3456"); // person2.setFirstName("Sven"); //
-		 * person2.setLastName("Svensson"); // person.setAge(20);
-		 * personData.add(person2); Person2 person3 = new Person2("Anna",
-		 * "Johansson", "19950810-2345"); // person3.setFirstName("Anna"); //
-		 * person3.setLastName("Johansson"); // person.setAge(20);
-		 * personData.add(person3); Person2 person4 = new Person2("Bengt",
-		 * "Persson", "19600314-5678"); // person4.setFirstName("Bengt"); //
-		 * person4.setLastName("Persson"); // person.setAge(20);
-		 * personData.add(person4);
-		 */
 	}
 
 	// Override the start() method.
@@ -110,18 +97,13 @@ public class SpamWindow extends Application {
 		});
 		
 		
-		TableColumn<PersonBean,String> fullNameCol=new TableColumn<PersonBean, String>("Full Name");
-		fullNameCol.setCellValueFactory(new PropertyValueFactory("fullName"));
-		//fullNameCol.setCellValueFactory(new PropertyValueFactory("lastName"));
-		
-		
 		TableColumn<PersonBean, String> emailCol = new TableColumn<PersonBean, String>("Email");
 		emailCol.setCellValueFactory(new PropertyValueFactory("email"));
 		emailCol.setCellFactory(TextFieldTableCell.<PersonBean> forTableColumn());
 		emailCol.setOnEditCommit((CellEditEvent<PersonBean, String> t) -> {
 			((PersonBean) t.getTableView().getItems().get(t.getTablePosition().getRow())).setEmail(t.getNewValue());
 		});
-		TableColumn<PersonBean, String> genderCol = new TableColumn<PersonBean, String>("Gender");
+		TableColumn<PersonBean, String> genderCol = new TableColumn<PersonBean, String>("Pet");
 		genderCol.setCellValueFactory(new PropertyValueFactory("gender"));
 		genderCol.setCellFactory(TextFieldTableCell.<PersonBean> forTableColumn());
 		genderCol.setOnEditCommit((CellEditEvent<PersonBean, String> t) -> {
@@ -133,7 +115,7 @@ public class SpamWindow extends Application {
 		ageCol.setOnEditCommit((CellEditEvent<PersonBean, Integer> t) -> {
 			((PersonBean) t.getTableView().getItems().get(t.getTablePosition().getRow())).setAge(t.getNewValue());
 		});
-		table.getColumns().setAll(fullNameCol, emailCol, genderCol, ageCol);
+		table.getColumns().setAll(firstNameCol,lastNameCol, emailCol, genderCol, ageCol);
 
 		
 		Button allButton = new Button("All");
@@ -212,13 +194,25 @@ public class SpamWindow extends Application {
 		});
 		// Create a root node. In this case, a flow layout
 		// is used, but several alternatives exist.
-		FlowPane rootNode = new FlowPane();
+		
+		layout = new BorderPane(); 
+		
+		// create Hbox for all buttons.
+		HBox buttons = new HBox();
 
-		rootNode.getChildren().addAll(table, allButton, maleButton, femaleButton, over18Button, addButton,
+
+		
+		buttons.getChildren().addAll( allButton, maleButton, femaleButton, over18Button, addButton,
 				removeButton);
+		
+		layout.setCenter(table);
+		layout.setBottom(buttons);
+		buildtop();
+		buildRight();
+		buildLeft();
+	
 		// Create a scene.
-		Scene myScene = new Scene(rootNode, 600, 600);
-rootNode.setStyle("-fx-background-color: green");  ;
+		Scene myScene = new Scene(layout, 600, 600);
 
 		// Set the scene on the stage.
 		myStage.setScene(myScene);
@@ -226,39 +220,19 @@ rootNode.setStyle("-fx-background-color: green");  ;
 		// Show the stage and its scene.
 		myStage.show();
 	}
-/*
-	private void printIt() {
-		Iterator<Person2> it = personData.iterator();
-		while (it.hasNext()) {
-			System.out.println(it.next().getGender());
-		}
-	}
-*/
-	/** Description of loadDate())
+
+	/** Description of loadData())
 	 * 
-	 * @param a			Description of a
-	 * @param b			Description of b
+	 * @param a			Ladda data från fil mydata
+	 * @param b			använder class PersonBean
 	 * @return			Description of c
 	 */
 
-	private void loadData() {
+	public void loadData() {
 		try {
 			System.out.println(Paths.get("mydata.txt").toAbsolutePath());
 List<String> lines = Files.readAllLines(Paths.get("mydata.txt"), StandardCharsets.UTF_8);		
-/* modifiera
-			InputStream is = getClass().getResourceAsStream("mydata.txt");
-			InputStreamReader isr = new InputStreamReader(is);
-			BufferedReader br = new BufferedReader(isr);
-			String str;
-			int counter=0;	 
-			
-			while ((str = br.readLine()) != null) {
-				String data[]=str.split(",");
-				PersonBean p = new PersonBean(data[0], data[1], data[2], data[3], new Integer(data[4]));
-				personData.add(p);
-				counter++;
-			}
-			*/
+
 String data[] = new String[6];
 for (String line : lines) {
 	data = line.split(",");
@@ -276,6 +250,12 @@ for (String line : lines) {
 		}
 		
 	}
+	
+	/** Description of WriteIt())
+	 * Skriver datat från tableview till en txt fil.  
+	 * 		
+	 */
+
 
 	private void writeIt() {
 		try {
@@ -319,4 +299,42 @@ for (String line : lines) {
 		System.out.println("Inside the stop() method.");
 		writeIt();
 	}
+	
+	
+private void buildtop(){
+		
+		BorderPane top = new BorderPane();
+		top.setStyle("-fx-background-color: red");
+		
+		Label divider = new Label();
+
+		divider.setPrefHeight(75);
+		top.setBottom(divider);
+		layout.setTop(top);	
+}
+	
+private void buildLeft() {
+	BorderPane left = new BorderPane();
+	left.setStyle("-fx-background-color: red");
+
+	Label divider = new Label();
+	divider.setPrefWidth(75);
+	left.setRight(divider);
+
+	layout.setLeft(left);
+
+}
+private void buildRight() {
+	BorderPane right = new BorderPane();
+	right.setStyle("-fx-background-color: red");
+
+	Label divider = new Label();
+	divider.setPrefWidth(75);
+	right.setLeft(divider);
+	layout.setRight(right);
+
+}
+	
+	
+	
 }

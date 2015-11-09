@@ -15,7 +15,6 @@ public class PersonBean {
 	
 	private StringProperty firstName = new SimpleStringProperty() ;
 	private StringProperty lastName = new SimpleStringProperty() ;
-	private StringProperty fullName = new SimpleStringProperty();
 	private StringProperty email = new SimpleStringProperty() ;
 	private StringProperty gender = new SimpleStringProperty() ;
 	private IntegerProperty age = new SimpleIntegerProperty() ;
@@ -27,7 +26,6 @@ public class PersonBean {
 	public PersonBean(String firstName,String lastName,String email, String gender, Integer age) {
 		setFirstName(firstName);
 		setLastName(lastName);
-		setFullName(firstName,lastName);
 		setEmail(email);
 		setGender(gender);
 		setAge(age);
@@ -45,25 +43,6 @@ public class PersonBean {
         this.firstNameProperty().set(name);
     }
 
-    
-    
-    public void setFullName( String f,String l){
-    	
-    	this.fullNameProperty().set(f+" "+l);
-    }
-    
-    
-    public StringProperty fullNameProperty(){
-    	return this.fullName;
-    }
-
-    public String getFullname(){
-    	return fullNameProperty().get();
-    }
-    
-    
-    
-    
     
 	
 	public final StringProperty lastNameProperty() {
